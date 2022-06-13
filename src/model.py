@@ -84,9 +84,6 @@ class TreeElastic(BaseEstimator):
         feature_df = X.copy()
         self.feature_weights = self.get_feature_weights(feature_df)
 
-        # Select only Returns from the data frame and multiply by the adjusting feature weights
-        ret_indexes = feature_df.index.get_level_values(Columns.features_col) == Columns.w_returns_col
-        feature_df = feature_df[ret_indexes].multiply(self.feature_weights)
         feature_df = feature_df.multiply(self.feature_weights)
 
         # Transform the returns into the model inputs
@@ -108,8 +105,7 @@ class TreeElastic(BaseEstimator):
 
     def predict(self, X: pd.DataFrame, y=None, *args, **kwargs) -> np.ndarray:
         feature_df = X.copy()
-        ret_indexes = feature_df.index.get_level_values(Columns.features_col) == Columns.w_returns_col
-        feature_df = feature_df[ret_indexes].multiply(self.feature_weights)
+        feature_df = feature_df.multiply(self.feature_weights)
         return feature_df @ (self.betas / self.feature_weights).T
 
     def score(self, X: pd.DataFrame, y=None, *args, **kwargs):

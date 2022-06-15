@@ -10,7 +10,7 @@ from itertools import combinations
 @dataclass(frozen=True)
 class Parameters:
     tree_depth: int = 4
-    n_splits: int = 2
+    n_splits: int = 3
     n_chars: int = 2
     mean_shrinkage: np.arange = np.arange(0, 0.95, 0.05)
     ridge_lambda: np.arange = 0.1 ** np.arange(5, 8.25, 0.25)
@@ -128,7 +128,7 @@ class DataPaths:
     sep: str = '_'
     returns_file_name: str = 'ret'
     rf_factor_file_name: str = 'rf_factor'
-    inter_data: Path = Path('dumps_inter')
+    model_dumps: Path = Path('model_dumps')
     processed_data: Path = Path('processed_data')
     model_suffix: str = 'model.pkl'
 

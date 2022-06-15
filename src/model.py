@@ -2,8 +2,9 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import Lars
+from sklearn.linear_model import LassoLars
 from sklearn.base import BaseEstimator
+from scipy.linalg import eigh
 
 from src.constants import Columns
 
@@ -17,7 +18,7 @@ class TreeElastic(BaseEstimator):
                  k_min: int = 0, k_max: float = np.inf):
         self.mean_shrinkage = mean_shrinkage
         self.ridge_lambda = ridge_lambda
-        self.base_model = Lars(normalize=False, fit_intercept=False, n_nonzero_coefs=k_max)
+        self.base_model = LassoLars(alpha=1e-20, normalize=False, fit_intercept=False)
         self.k_min = k_min
         self.k_max = k_max
         self.feature_weights = None
@@ -39,17 +40,17 @@ class TreeElastic(BaseEstimator):
             Tuple of Eigen Values and Eigen Vectors
         """
         sigma = feature_df.cov()
-        eig_values, eig_vectors = np.linalg.eig(sigma)
-        eig_values = eig_values.real
-        eig_vectors = eig_vectors.real
+        eig_values, eig_vectors = eigh(sigma)
+        eig_values = eig_values[::-1]
+        eig_vectors = np.flip(eig_vectors, axis=1)
         gamma = min(feature_df.shape[0], sum(eig_values > MIN_EIG_VALUE))
-        return eig_values[:gamma], eig_vectors[:gamma]
+        return eig_values[:gamma], eig_vectors[:, :gamma]
 
     def process_input(self, feature_df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
         eig_values, eig_vectors = self.decompose_covariance(feature_df)
-        sigma_tilde = eig_vectors.T @ np.diag(np.sqrt(eig_values)) @ eig_vectors
+        sigma_tilde = eig_vectors @ np.diag(np.sqrt(eig_values)) @ eig_vectors.T
 
-        mu_tilde = eig_vectors.T @  np.diag(1 / np.sqrt(eig_values)) @ eig_vectors
+        mu_tilde = eig_vectors @  np.diag(1 / np.sqrt(eig_values)) @ eig_vectors.T
         mu_tilde = mu_tilde @ (
                 feature_df.mean() + self.mean_shrinkage * feature_df.values.mean()
         ).values

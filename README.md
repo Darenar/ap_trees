@@ -33,6 +33,14 @@ In particular, the model solves *mean-variance portfolio construction problem* w
 
 The hyperparameters (mean shrinkage, L1 and L2 regularization lambdas) are tuned on the validation set 
 using Time-Series cross-validation technique, and the model is finally evaluated on the test set.
+#### Comparison
+The comparison between implementations is made based on out-of-sample Sharpe ratio as a function of tuning parameters 
+for AP-Trees on Size, Investment and Operating Profitability.
+In the paper, the lineplot looks as follows:
+![R Test SR](imgs/sr_test_lineplot_gt.png)
+
+In this implementation, the lineplot looks as follows:
+![Python Test SR](imgs/sr_test_lineplot.png)
 
 ## Setup
 Dependencies for Python 3.7:
@@ -57,4 +65,10 @@ To prune the resulted trees, run the command:
 ```
 python prune_trees.py
 ```
+
+To plot test SR, run the command:
+```
+python plot_test_sr.py --feature_combination {e.g. lme_op_investment}
+```
+
 

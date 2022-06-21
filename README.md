@@ -1,4 +1,4 @@
-# Forest through the Trees
+# Asset-Pricing Trees with Pruning
 ## Introduction
 This repository contains the implementation of the paper 
 [Forest through the Trees: Building Cross-Sections of Stock Returns](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3493458).
@@ -43,11 +43,7 @@ In this implementation, the lineplot looks as follows:
 ![Python Test SR](imgs/sr_test_lineplot.png)
 
 ## Setup
-Dependencies for Python 3.7:
-- Numpy 1.21.1 
-- PyTorch 1.9.0
-
-Install the required packages
+Install the required packages for Python3.7+:
 ```
 pip install -r requirements.txt
 ```
@@ -55,6 +51,8 @@ pip install -r requirements.txt
 Download the required dataset from the [link](https://www.dropbox.com/sh/gukpci07xpdjl6i/AAA1_EyOxYZy7rr1BAUGFloEa?dl=0).
 
 Place all the files from the directory into *characteristics* folder.
+
+All the parameters, such as the tree depth or the number of split per node could be set under the corresponding fields in ```src/constants.py``` file.
 
 To build tree portfolios, run the command:
 ```
